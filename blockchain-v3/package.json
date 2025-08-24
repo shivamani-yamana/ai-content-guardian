@@ -1,0 +1,28 @@
+{
+  "name": "blockchain-v3",
+  "version": "1.0.0",
+  "description": "Smart contracts for AI-Powered Cross-Chain Content Guardian",
+  "main": "index.js",
+  "scripts": {
+    "compile": "npx hardhat compile",
+    "test": "npx hardhat test",
+    "deploy:content": "npx hardhat run scripts/deploy-content.js --network localhost",
+    "deploy:guardian": "npx hardhat run scripts/deploy-guardian.js --network localhost",
+    "node": "npx hardhat node"
+  },
+  "keywords": [
+    "avalanche",
+    "content-moderation",
+    "ai",
+    "cross-chain"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^4.0.0",
+    "@types/node": "^24.3.0",
+    "hardhat": "^2.26.3",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.2"
+  }
+}
