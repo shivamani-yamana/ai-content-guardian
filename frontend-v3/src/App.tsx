@@ -17,13 +17,13 @@ const PRIVATE_KEY = import.meta.env.VITE_PRIVATE_KEY
 const APP_SUBNET = {
   chainId: 1221,
   chainName: 'App Subnet',
-  rpcUrl: 'http://127.0.0.1:44329/ext/bc/2HBRYnNjW2zaSTU9Yx7BNjP9EqNWXpF9r3BW1iNi8aMdYdfQYU/rpc'
+  rpcUrl: 'http://127.0.0.1:41243/ext/bc/S9KE4zarW96qo19RUj3ZWfoFKhetZgarjNnmJ6McAogjtRHVs/rpc'
 }
 
 const SECURITY_SUBNET = {
   chainId: 1222,
   chainName: 'Security Subnet', 
-  rpcUrl: 'http://127.0.0.1:41241/ext/bc/29sTJAdK61GMy6habcTqEHFj2GfQgnieGh8TSaWJgpwnNqYS4y/rpc'
+  rpcUrl: 'http://127.0.0.1:39737/ext/bc/21FZHCQk1zyjTdw7rUfZJNs53QVvbB1t2k4rYwn23o66RcAcFo/rpc'
 }
 
 function App() {
@@ -200,50 +200,51 @@ function App() {
     }
   }
 
-  const checkSecurityFlags = async (address: string) => {
-    try {
-      const web3Instance = currentSubnet === 'app' ? web3App : web3Security
-      if (!web3Instance) {
-        return { isMalicious: false, violationCount: 0 }
-      }
-
-      // Guardian contract address on Security Subnet
-      const guardianContractAddress = '0x768AF58E63775354938e9F3FEdB764F601c038b4'
-      
-      const guardianAbi = [
-        {
-          "inputs": [{"internalType": "address", "name": "", "type": "address"}],
-          "name": "flaggedAddresses",
-          "outputs": [{"internalType": "bool", "name": "", "type": "bool"}],
-          "stateMutability": "view",
-          "type": "function"
-        },
-        {
-          "inputs": [{"internalType": "address", "name": "", "type": "address"}],
-          "name": "violationCounts",
-          "outputs": [{"internalType": "uint256", "name": "", "type": "uint256"}],
-          "stateMutability": "view",
-          "type": "function"
-        }
-      ]
-
-      const contract = new web3Instance.eth.Contract(guardianAbi, guardianContractAddress)
-      const [isMalicious, violationCount] = await Promise.all([
-        contract.methods.flaggedAddresses(address).call(),
-        contract.methods.violationCounts(address).call()
-      ])
-
-      return { isMalicious: Boolean(isMalicious), violationCount: Number(violationCount) }
-    } catch (error) {
-      console.error('Error checking Security Subnet:', error)
+const checkSecurityFlags = async (address: string) => {
+  try {
+    // Always use Security Subnet for checking flags
+    if (!web3Security) {
       return { isMalicious: false, violationCount: 0 }
     }
-  }
 
-  // Helper function to format addresses
-  const formatAddress = (address: string) => {
-    return `${address.slice(0, 6)}...${address.slice(-4)}`
+    // Updated Guardian contract address on Security Subnet
+    const guardianContractAddress = '0x8B3BC4270BE2abbB25BC04717830bd1Cc493a461'
+    
+    const guardianAbi = [
+      {
+        "inputs": [{"internalType": "address", "name": "", "type": "address"}],
+        "name": "flaggedAddresses",
+        "outputs": [{"internalType": "bool", "name": "", "type": "bool"}],
+        "stateMutability": "view",
+        "type": "function"
+      },
+      {
+        "inputs": [{"internalType": "address", "name": "", "type": "address"}],
+        "name": "violationCounts",
+        "outputs": [{"internalType": "uint256", "name": "", "type": "uint256"}],
+        "stateMutability": "view",
+        "type": "function"
+      }
+    ]
+
+    const contract = new web3Security.eth.Contract(guardianAbi, guardianContractAddress)
+    const [isMalicious, violationCount] = await Promise.all([
+      contract.methods.flaggedAddresses(address).call(),
+      contract.methods.violationCounts(address).call()
+    ])
+
+    return { isMalicious: Boolean(isMalicious), violationCount: Number(violationCount) }
+  } catch (error) {
+    console.error('Error checking Security Subnet:', error)
+    return { isMalicious: false, violationCount: 0 }
   }
+}
+
+
+// Helper function to format addresses
+const formatAddress = (address: string) => {
+  return `${address.slice(0, 6)}...${address.slice(-4)}`
+}
 
   return (
     <div className="app">
@@ -253,7 +254,24 @@ function App() {
           <div className="hero-badge">
             AI-Powered ICM Threat Intelligence System
           </div>
-          <h1 className="hero-title">WarpGuard</h1>
+          <div className="hero-title-container" style={{ 
+            display: 'flex', 
+            alignItems: 'center', 
+            justifyContent: 'center', 
+            gap: '20px',
+            marginBottom: '12px'
+          }}>
+            <img 
+              src="/logo-v2.png" 
+              alt="WarpGuard Logo" 
+              style={{ 
+                width: '60px', 
+                height: '100%',
+                fill: 'white',
+              }}
+            />
+            <h1 className="hero-title" style={{ margin: 0 }}>WarpGuard</h1>
+          </div>
           <h1 className="hero-title" style={{ fontWeight: 'normal', fontSize: '2.2rem' }}>The AI Guardian for Avalanche Warp Messaging</h1>
           <p className="hero-subtitle">
             AI-driven Inter-Chain Messaging for content moderation - A secure way to protect your subnet from malicious accounts using Avalanche's cross-chain capabilities
