@@ -4,7 +4,7 @@
 > **Avalanche Team1 Hackathon Hyderabad 2025 Submission**  
 > *AI-driven cross-chain content moderation protecting the Avalanche ecosystem*
 
-[![Demo Video](https://img.shields.io/badge/📹_Demo_Video-Watch_Now-red?style=for-the-badge)](xxxx)
+[![Demo Video](https://img.shields.io/badge/📹_Demo_Video-Watch_Now-red?style=for-the-badge)](https://drive.google.com/drive/folders/1r20dzjLq8QGxVqkB_QWWbj_AMlyA-CfA?usp=sharing)
 [![Pitch Deck](https://img.shields.io/badge/📊_Pitch_Deck-View_PPT-blue?style=for-the-badge)](https://docs.google.com/presentation/d/1HgeBgC7kuPL2yxoNHkcuuUUSyHDY1TqBmdCh9AxrrEI/edit?usp=sharing)
 
 ---
