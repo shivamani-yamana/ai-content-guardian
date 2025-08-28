@@ -49,15 +49,6 @@ function App() {
     flaggedAccounts: number
     lastActivity: number | null
   }>({ totalICMMessages: 0, flaggedAccounts: 0, lastActivity: null })
-  const [flaggedAddresses, setFlaggedAddresses] = useState<{
-    [address: string]: {
-      isFlagged: boolean
-      violationCount: number
-      firstFlagged: number
-      lastViolation: number
-      maliciousContent: string[]
-    }
-  }>({})
 
   // Computed values
   const currentAlerts = alertsBySubnet[currentSubnet]
@@ -153,31 +144,8 @@ function App() {
         lastActivity: Date.now()
       }))
 
-      // If malicious, simulate cross-chain alert to Security Subnet and flag the address
+      // If malicious, simulate cross-chain alert to Security Subnet
       if (result.classification === 'MALICIOUS') {
-        // Flag the address
-        setFlaggedAddresses(prev => {
-          const currentFlags = prev[account] || {
-            isFlagged: false,
-            violationCount: 0,
-            firstFlagged: Date.now(),
-            lastViolation: Date.now(),
-            maliciousContent: []
-          }
-          
-          return {
-            ...prev,
-            [account]: {
-              ...currentFlags,
-              isFlagged: true,
-              violationCount: currentFlags.violationCount + 1,
-              lastViolation: Date.now(),
-              maliciousContent: [...currentFlags.maliciousContent, content.trim()].slice(-5) // Keep last 5
-            }
-          }
-        })
-
-        // Add cross-chain security alerts
         setTimeout(() => {
           const securityAlert: Alert = {
             id: `security-${Date.now()}`,
@@ -187,17 +155,9 @@ function App() {
             subnet: 'security'
           }
           
-          const flaggedAlert: Alert = {
-            id: `flagged-${Date.now()}`,
-            content: `🚫 Address Flagged: ${account.slice(0, 6)}...${account.slice(-4)} - Content: "${content.trim().slice(0, 50)}${content.trim().length > 50 ? '...' : ''}"`,
-            classification: 'MALICIOUS',
-            timestamp: Date.now() + 500,
-            subnet: 'security'
-          }
-          
           setAlertsBySubnet(prev => ({
             ...prev,
-            security: [securityAlert, flaggedAlert, ...prev.security]
+            security: [securityAlert, ...prev.security]
           }))
         }, 2000)
       }
@@ -217,6 +177,20 @@ function App() {
     console.log(`Switching to ${subnet} subnet...`)
     setCurrentSubnet(subnet)
     
+    // Add system message to show subnet switch
+    const switchAlert: Alert = {
+      id: `switch-${Date.now()}`,
+      content: `Switched to ${subnet === 'app' ? 'App Subnet (Chain 1221) - Content Submission & Analysis' : 'Security Subnet (Chain 1222) - Guardian Monitoring & Security Alerts'}`,
+      classification: 'SYSTEM',
+      timestamp: Date.now(),
+      subnet: subnet
+    }
+    
+    setAlertsBySubnet(prev => ({
+      ...prev,
+      [subnet]: [switchAlert, ...prev[subnet]]
+    }))
+    
     await updateSecurityStatus()
   }
 
@@ -233,23 +207,28 @@ function App() {
 
   const checkSecurityFlags = async (address: string) => {
     try {
+      const web3Instance = currentSubnet === 'app' ? web3App : web3Security
+      
+      if (!web3Instance) {
+        return { isMalicious: false, violationCount: 0 }
+      }
+
+      const contractAddress = '0x8B3BC4270BE2abbB25BC04717830bd1Cc493a461'
+      
       if (currentSubnet === 'app') {
         // On App Subnet, show submission count
         return { 
-          isMalicious: flaggedAddresses[address]?.isFlagged || false, 
+          isMalicious: false, 
           violationCount: alertsBySubnet.app.length,
           subnetInfo: `App Subnet - ${alertsBySubnet.app.length} submissions`
         }
       } else {
-        // On Security Subnet, show flagged status from cross-chain data
-        const addressFlags = flaggedAddresses[address]
-        const isFlagged = addressFlags?.isFlagged || false
-        const violationCount = addressFlags?.violationCount || 0
-        
+        // On Security Subnet, show flagged status
+        const flaggedCount = alertsBySubnet.security.filter(a => a.classification === 'MALICIOUS').length
         return { 
-          isMalicious: isFlagged, 
-          violationCount: violationCount,
-          subnetInfo: `Security Subnet - ${isFlagged ? `FLAGGED (${violationCount} violations)` : 'CLEAN'}`
+          isMalicious: flaggedCount > 0, 
+          violationCount: flaggedCount,
+          subnetInfo: `Security Subnet - ${flaggedCount > 0 ? 'FLAGGED' : 'CLEAN'}`
         }
       }
     } catch (error) {
@@ -599,7 +578,7 @@ function App() {
               <div className="activity-metric">
                 <div className="metric-icon">🚫</div>
                 <div className="metric-content">
-                  <div className="metric-number">{Object.keys(flaggedAddresses).length}</div>
+                  <div className="metric-number">{crossChainActivity.flaggedAccounts}</div>
                   <div className="metric-label">Flagged Accounts</div>
                 </div>
               </div>
@@ -615,53 +594,6 @@ function App() {
                 </div>
               </div>
             </div>
-            
-            {/* Flagged Addresses Section - Only show on Security Subnet */}
-            {currentSubnet === 'security' && Object.keys(flaggedAddresses).length > 0 && (
-              <div className="flagged-addresses-section">
-                <h4 style={{ fontSize: '16px', fontWeight: '600', marginBottom: '12px' }}>🚫 Flagged Addresses</h4>
-                <div className="flagged-addresses-grid">
-                  {Object.entries(flaggedAddresses).map(([address, flags]) => (
-                    <div key={address} className="flagged-address-card">
-                      <div className="flagged-address-header">
-                        <div className="address-info">
-                          <span className="address-label">Address:</span>
-                          <code className="address-value">{formatAddress(address)}</code>
-                        </div>
-                        <div className="violation-badge">
-                          {flags.violationCount} violations
-                        </div>
-                      </div>
-                      <div className="flagged-details">
-                        <div className="flagged-detail">
-                          <span className="detail-label">First Flagged:</span>
-                          <span className="detail-value">{new Date(flags.firstFlagged).toLocaleString()}</span>
-                        </div>
-                        <div className="flagged-detail">
-                          <span className="detail-label">Last Violation:</span>
-                          <span className="detail-value">{new Date(flags.lastViolation).toLocaleString()}</span>
-                        </div>
-                        <div className="flagged-detail">
-                          <span className="detail-label">Recent Malicious Content:</span>
-                          <div className="malicious-content-list">
-                            {flags.maliciousContent.slice(0, 2).map((content, idx) => (
-                              <div key={idx} className="malicious-content-item">
-                                "{content.slice(0, 60)}{content.length > 60 ? '...' : ''}"
-                              </div>
-                            ))}
-                            {flags.maliciousContent.length > 2 && (
-                              <div className="more-content">
-                                +{flags.maliciousContent.length - 2} more violations
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
             
             {/* Subnet Comparison */}
             <div className="subnet-comparison">
@@ -694,8 +626,8 @@ function App() {
                       <span className="metric-name">Total Activity</span>
                     </div>
                     <div className="subnet-metric">
-                      <span className="metric-value">{Object.keys(flaggedAddresses).length}</span>
-                      <span className="metric-name">Flagged Addresses</span>
+                      <span className="metric-value">{alertsBySubnet.security.filter(a => a.classification === 'MALICIOUS').length}</span>
+                      <span className="metric-name">Threats Detected</span>
                     </div>
                   </div>
                 </div>

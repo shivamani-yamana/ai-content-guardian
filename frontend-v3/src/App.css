@@ -463,6 +463,8 @@ body {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 12px;
+  gap: 8px;
+  flex-wrap: wrap;
 }
 
 .alert-badge {
@@ -482,6 +484,294 @@ body {
 .alert-badge.safe {
   background: #22c55e;
   color: white;
+}
+
+.alert-badge.system {
+  background: #3b82f6;
+  color: white;
+}
+
+.alert-subnet {
+  font-size: 11px;
+  color: var(--neutral-400);
+  font-family: var(--font-mono);
+  background: rgba(255, 255, 255, 0.8);
+  padding: 2px 8px;
+  border-radius: 12px;
+  border: 1px solid var(--neutral-300);
+}
+
+.subnet-context {
+  margin-bottom: 12px;
+  padding: 8px 12px;
+  background: rgba(59, 130, 246, 0.1);
+  border: 1px solid rgba(59, 130, 246, 0.2);
+  border-radius: var(--radius-md);
+}
+
+.subnet-indicator {
+  font-size: 12px;
+  font-weight: 600;
+  color: #3b82f6;
+}
+
+/* Cross-Chain Activity Visualization */
+.cross-chain-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.activity-metric {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.05) 0%, rgba(99, 102, 241, 0.05) 100%);
+  border: 1px solid rgba(59, 130, 246, 0.2);
+  border-radius: var(--radius-lg);
+}
+
+.metric-icon {
+  font-size: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: rgba(59, 130, 246, 0.1);
+  border-radius: var(--radius-md);
+}
+
+.metric-content {
+  flex: 1;
+}
+
+.metric-number {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--neutral-800);
+  line-height: 1;
+}
+
+.metric-label {
+  font-size: 12px;
+  color: var(--neutral-500);
+  margin-top: 4px;
+}
+
+/* Flagged Addresses Section */
+.flagged-addresses-section {
+  margin-top: 24px;
+  padding-top: 24px;
+  border-top: 1px solid var(--neutral-200);
+}
+
+.flagged-addresses-grid {
+  display: grid;
+  gap: 16px;
+}
+
+.flagged-address-card {
+  background: linear-gradient(135deg, rgba(220, 38, 38, 0.05) 0%, rgba(185, 28, 28, 0.05) 100%);
+  border: 1px solid rgba(220, 38, 38, 0.2);
+  border-radius: var(--radius-lg);
+  padding: 16px;
+}
+
+.flagged-address-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 12px;
+}
+
+.address-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.address-label {
+  font-size: 12px;
+  color: var(--neutral-500);
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
+.address-value {
+  background: var(--neutral-100);
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+  font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace;
+  font-size: 14px;
+  color: var(--neutral-800);
+  border: 1px solid var(--neutral-200);
+}
+
+.violation-badge {
+  background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+  color: white;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  box-shadow: 0 2px 4px rgba(220, 38, 38, 0.2);
+}
+
+.flagged-details {
+  display: grid;
+  gap: 8px;
+}
+
+.flagged-detail {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.detail-label {
+  font-size: 12px;
+  color: var(--neutral-500);
+  font-weight: 500;
+  min-width: 120px;
+}
+
+.detail-value {
+  font-size: 12px;
+  color: var(--neutral-700);
+  text-align: right;
+}
+
+.malicious-content-list {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.malicious-content-item {
+  background: var(--neutral-100);
+  padding: 6px 8px;
+  border-radius: var(--radius-sm);
+  font-size: 11px;
+  color: var(--neutral-600);
+  font-style: italic;
+  line-height: 1.3;
+  border: 1px solid var(--neutral-200);
+}
+
+.more-content {
+  font-size: 11px;
+  color: var(--neutral-500);
+  font-weight: 500;
+  text-align: center;
+  padding: 4px;
+}
+
+.subnet-comparison {
+  padding-top: 20px;
+  border-top: 1px solid var(--neutral-200);
+}
+
+.comparison-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.subnet-stats {
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid var(--neutral-200);
+  border-radius: var(--radius-lg);
+}
+
+.subnet-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.subnet-icon {
+  font-size: 18px;
+}
+
+.subnet-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--neutral-700);
+}
+
+.subnet-metrics {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.subnet-metric {
+  text-align: center;
+}
+
+.metric-value {
+  display: block;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--primary-red);
+  line-height: 1;
+}
+
+.metric-name {
+  font-size: 11px;
+  color: var(--neutral-500);
+  margin-top: 4px;
+  display: block;
+}
+
+/* Security View Styles */
+.security-view {
+  padding: 20px;
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.05) 0%, rgba(220, 38, 38, 0.05) 100%);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  border-radius: var(--radius-lg);
+}
+
+.security-info h4 {
+  color: var(--neutral-800);
+  margin-bottom: 12px;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.security-info p {
+  color: var(--neutral-600);
+  margin-bottom: 20px;
+  line-height: 1.6;
+}
+
+.security-features {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.feature {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(239, 68, 68, 0.15);
+  border-radius: var(--radius-md);
+  font-size: 14px;
+  color: var(--neutral-700);
+}
+
+.feature-icon {
+  font-size: 16px;
 }
 
 .alert-time {
