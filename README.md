@@ -65,6 +65,7 @@ Current blockchain security solutions are **isolated and reactive**. When malici
 
 ### Prerequisites
 
+-Linux OS
 - Node.js (v16+)
 - Python 3.8+
 - MetaMask browser extension
